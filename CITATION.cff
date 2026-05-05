@@ -2,14 +2,18 @@ cff-version: 1.2.0
 message: "If you use this code, please cite the accompanying paper."
 title: "Smoking, aging, and the gut microbiome — analysis code for Bao et al., NTR-2026-092"
 abstract: >-
-  Analysis code for the supplementary results of Bao et al. (NTR-2026-092),
-  a secondary analysis of the Guangdong Gut Microbiome Project (GGMP)
-  examining the joint relationship of smoking and aging with the gut
-  microbiome and cardiometabolic risk profiles. Includes the rarefaction
-  / sequencing-depth supplement, the male-only sensitivity analysis,
-  family- and genus-level OLS robustness re-tests, the MaAsLin2 family /
-  genus and male-only OTU cross-checks, the ten-mediator cardiometabolic
-  panel, and the Optuna-tuned LightGBM smoking classifier.
+  Analysis code for Bao et al. (NTR-2026-092), a secondary analysis of the
+  Guangdong Gut Microbiome Project (GGMP) examining the joint relationship
+  of smoking and aging with the gut microbiome and cardiometabolic risk
+  profiles. Covers (a) the main-paper analyses producing Figures 1-6 and
+  Supp Figs 1-5 (MaAsLin2 OTU-level smoking and age models, the LightGBM
+  smoking classifier, GSEA-style chronic-disease enrichment, the ACC/AHA
+  2013 PCE ASCVD computation, and the cardiometabolic mediation panel);
+  and (b) the revision-period sensitivity / robustness analyses producing
+  Supp Figs 6-11 and Supp Tables 9-21 (rarefaction supplement, male-only
+  sensitivity, family- and genus-level OLS robustness, MaAsLin2 family /
+  genus and male-only OTU cross-checks, ten-mediator cardiometabolic
+  panel, and the Optuna-tuned LightGBM smoking classifier).
 authors:
   - family-names: Bao
     given-names: Zhiwei
@@ -43,7 +47,7 @@ authors:
     email: ml2km@zju.edu.cn
 repository-code: "https://github.com/zwbao/ggmp-smoking-aging-analysis"
 license: MIT
-version: "1.0.0"
+version: "1.1.0"
 date-released: "2026-05-05"
 keywords:
   - gut-microbiome

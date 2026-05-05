@@ -6,19 +6,28 @@ This repository contains the analysis code for the supplementary results of:
 
 > Bao Z, Yang Z, Sun R, Meng R, Wu W, Li MD. **Associations of smoking, aging, and their interplay with the gut microbiome and chronic disease risk profiles.** *Nicotine & Tobacco Research* (2026). DOI: TBD (will be updated once the article DOI is assigned).
 
-It is provided so that anyone with access to the public Guangdong Gut Microbiome Project (GGMP) data can re-run the four secondary / sensitivity analyses introduced during peer review. The original GGMP raw-processing workflow is *not* included here — see [Data dependencies](#data-dependencies).
+It is provided so that anyone with access to the public Guangdong Gut Microbiome Project (GGMP) data can re-run the analyses underlying the published manuscript. The original GGMP raw-processing workflow is *not* included here — see [Data dependencies](#data-dependencies).
+
+## Repository scope
+
+This repository covers:
+
+- **Main-paper analyses** for Figures 1-6 and Supplementary Figures 1-5 (`scripts/main/`): MaAsLin2 OTU-level smoking and age models, the LightGBM smoking classifier (Supp Fig 3), GSEA-style chronic-disease enrichment (Fig 5), the ACC/AHA 2013 PCE ASCVD computation (Fig 6a), and the cardiometabolic mediation panel (Fig 6b).
+- **Revision-period sensitivity / robustness analyses** for Supplementary Figures 6-11 and Supplementary Tables 9-21 (`scripts/revision/`): rarefaction supplement, male-only sensitivity, family- and genus-level OLS robustness, MaAsLin2 family/genus cross-check, ten-mediator cardiometabolic panel, and Optuna LightGBM hyperparameter optimization, plus the four post-audit fix scripts.
+
+Raw FASTQ → BIOM-table processing is in the original GGMP repository (<https://github.com/SMUJYYXB/GGMP-Regional-variations>) and is not duplicated here.
 
 ## Audit history
 
 In May 2026 a four-bug cross-pipeline audit was performed on the revision-analysis package. All four bugs have been fixed; the supplementary tables, figures, and the `outputs-reference/` files in this repository reflect the **post-fix** state. Buggy outputs are preserved in the local working tree for diagnostic record but are not redistributed here. Full memos: [`docs/audit/`](docs/audit/).
 
-1. **Male-only OTU concordance — transform-space mismatch.** The right panel of Supp Fig 7 plotted male-only OTU smoking coefficients computed by Python OLS on `arcsin(sqrt(rel_abundance))` against full-sample MaAsLin2 `LOG`-transform coefficients from `smk_status_sig_res.tsv`. The two coefficient sets lived in different statistical spaces, so the y=x diagonal was meaningless and male-only points appeared spuriously attenuated by ~17x. Fix: re-run the male-only OTU smoking model in the published MaAsLin2 LOG framework (`scripts/02b_maaslin2_male_only_otu.R`) and re-render the figure (`scripts/05_replot_male_only_figure.py`). See [`docs/audit/male_only_otu_concordance_fix_memo.md`](docs/audit/male_only_otu_concordance_fix_memo.md).
+1. **Male-only OTU concordance — transform-space mismatch.** The right panel of Supp Fig 7 plotted male-only OTU smoking coefficients computed by Python OLS on `arcsin(sqrt(rel_abundance))` against full-sample MaAsLin2 `LOG`-transform coefficients from `smk_status_sig_res.tsv`. The two coefficient sets lived in different statistical spaces, so the y=x diagonal was meaningless and male-only points appeared spuriously attenuated by ~17x. Fix: re-run the male-only OTU smoking model in the published MaAsLin2 LOG framework (`scripts/revision/02b_maaslin2_male_only_otu.R`) and re-render the figure (`scripts/revision/05_replot_male_only_figure.py`). See [`docs/audit/male_only_otu_concordance_fix_memo.md`](docs/audit/male_only_otu_concordance_fix_memo.md).
 
-2. **Male-only quartile encoding — `smoke_binary` string-NaN bug.** `clean_metadata` builds `smoke_binary` via a nested `np.where(...)` whose inner third branch coerces to the literal Python string `'nan'` rather than `NaN`. Downstream `.notna()` filters therefore let 523 former-smoker / not-everyday male rows leak into the male-only quartile model with `smoke_everyday=0`, contaminating the never-smoker baseline. Fix: `scripts/06_refit_male_quartile_module.py` re-fits per-quartile two ways (binary `everyday vs never`, 4-level `smk_status` factor); the manuscript uses Approach B (4-level factor, n=2,801). See [`docs/audit/cross_pipeline_audit.md`](docs/audit/cross_pipeline_audit.md) (Finding 1.1).
+2. **Male-only quartile encoding — `smoke_binary` string-NaN bug.** `clean_metadata` builds `smoke_binary` via a nested `np.where(...)` whose inner third branch coerces to the literal Python string `'nan'` rather than `NaN`. Downstream `.notna()` filters therefore let 523 former-smoker / not-everyday male rows leak into the male-only quartile model with `smoke_everyday=0`, contaminating the never-smoker baseline. Fix: `scripts/revision/06_refit_male_quartile_module.py` re-fits per-quartile two ways (binary `everyday vs never`, 4-level `smk_status` factor); the manuscript uses Approach B (4-level factor, n=2,801). See [`docs/audit/cross_pipeline_audit.md`](docs/audit/cross_pipeline_audit.md) (Finding 1.1).
 
-3. **Family/genus OLS encoding — same `smoke_binary` string-NaN bug.** The same string-NaN bug propagated into `run_taxonomic_robustness`, contaminating the family- and genus-level smoking-side OLS models with the same 570 rows of former/non-daily smokers (n inflated from the intended 5,926 → buggy 6,496). Fix: `scripts/07_refit_family_genus_smoking_ols.py` re-fits both levels with the corrected `smk_status.isin(["everyday", "never_smoker"])` filter and rejoins the (untouched) age-side TSVs. The age-side TSVs (`family_age_results.tsv`, `genus_age_results.tsv`) used a different code path and were unaffected. See [`docs/audit/final_bug_fixes_memo.md`](docs/audit/final_bug_fixes_memo.md) (Bug 3).
+3. **Family/genus OLS encoding — same `smoke_binary` string-NaN bug.** The same string-NaN bug propagated into `run_taxonomic_robustness`, contaminating the family- and genus-level smoking-side OLS models with the same 570 rows of former/non-daily smokers (n inflated from the intended 5,926 → buggy 6,496). Fix: `scripts/revision/07_refit_family_genus_smoking_ols.py` re-fits both levels with the corrected `smk_status.isin(["everyday", "never_smoker"])` filter and rejoins the (untouched) age-side TSVs. The age-side TSVs (`family_age_results.tsv`, `genus_age_results.tsv`) used a different code path and were unaffected. See [`docs/audit/final_bug_fixes_memo.md`](docs/audit/final_bug_fixes_memo.md) (Bug 3).
 
-4. **ASCVD smoker mapping — non-existent category.** `run_mediation_panel.py` mapped the GGMP `smk_status` column with `{"never_smoker": 0, "current_smoker": 1}`, but `current_smoker` does not exist in GGMP — it is a *derived* category in the original `code.R`/`cvrisk.R` (`everyday` ∪ `not_everyday` → `current_smoker`). Under the buggy mapping, all `everyday`, `not_everyday`, and `former_smoker` rows were silently sent to NaN, so ASCVD existed only for never-smokers (n=3,426). Fix: `scripts/08_refit_mediation_panel.py` adopts the published `cvrisk.R` definition exactly (`never_smoker → 0`, `everyday → 1`, `not_everyday → 1`, `former_smoker → excluded`); the corrected mediation panel runs on n=4,642 complete cases. See [`docs/audit/final_bug_fixes_memo.md`](docs/audit/final_bug_fixes_memo.md) (Bug 4) and [`docs/audit/mediation_panel_summary_corrected.md`](docs/audit/mediation_panel_summary_corrected.md).
+4. **ASCVD smoker mapping — non-existent category.** `run_mediation_panel.py` mapped the GGMP `smk_status` column with `{"never_smoker": 0, "current_smoker": 1}`, but `current_smoker` does not exist in GGMP — it is a *derived* category in the original `code.R`/`cvrisk.R` (`everyday` ∪ `not_everyday` → `current_smoker`). Under the buggy mapping, all `everyday`, `not_everyday`, and `former_smoker` rows were silently sent to NaN, so ASCVD existed only for never-smokers (n=3,426). Fix: `scripts/revision/08_refit_mediation_panel.py` adopts the published `cvrisk.R` definition exactly (`never_smoker → 0`, `everyday → 1`, `not_everyday → 1`, `former_smoker → excluded`); the corrected mediation panel runs on n=4,642 complete cases. See [`docs/audit/final_bug_fixes_memo.md`](docs/audit/final_bug_fixes_memo.md) (Bug 4) and [`docs/audit/mediation_panel_summary_corrected.md`](docs/audit/mediation_panel_summary_corrected.md).
 
 ## Abstract
 
@@ -26,21 +35,31 @@ In May 2026 a four-bug cross-pipeline audit was performed on the revision-analys
 
 ## What this repo contains
 
-Nine self-contained analysis scripts that produce the supplementary figures and tables introduced during peer review. Scripts 01–04 are the original revision-analysis pipeline; scripts 02b and 05–08 are the post-audit fix scripts (see [Audit history](#audit-history)) and supersede the corresponding sub-pipelines in 01 and 03 for the manuscript-ready results.
+Fourteen self-contained analysis scripts split across two subdirectories:
 
-| Script | Language | Purpose |
-| --- | --- | --- |
-| [`scripts/01_revision_analysis.py`](scripts/01_revision_analysis.py) | Python | Rarefaction / sequencing-depth supplement, male-only sensitivity analysis on the pro-aging module, and family/genus OLS robustness re-tests. **Note:** the male-only quartile and family/genus smoking OLS sub-pipelines have been superseded by scripts 06 and 07; see [Audit history](#audit-history). |
-| [`scripts/02_maaslin2_reanalysis.R`](scripts/02_maaslin2_reanalysis.R) | R | MaAsLin2 cross-check of the family- and genus-level smoking and age associations. |
-| [`scripts/02b_maaslin2_male_only_otu.R`](scripts/02b_maaslin2_male_only_otu.R) | R | MaAsLin2 male-only OTU-level re-fit for the 40 direction-concordant overlap OTUs, in the same LOG framework as the published full-sample model (Bug 1 fix). |
-| [`scripts/03_mediation_panel.py`](scripts/03_mediation_panel.py) | Python | Ten-mediator multi-mediator panel under the original `gai_med.R` LM specification, with bootstrap percentile 95% CIs. **Note:** superseded by script 08 (Bug 4 fix). |
-| [`scripts/04_lightgbm_optimized.py`](scripts/04_lightgbm_optimized.py) | Python | Optuna TPE LightGBM smoking classifier (200-trial budget) with full per-fold diagnostics. |
-| [`scripts/05_replot_male_only_figure.py`](scripts/05_replot_male_only_figure.py) | Python | Re-render Supp Fig 7 right panel (MaAsLin2 LOG concordance scatter), consuming the script-02b output. |
-| [`scripts/06_refit_male_quartile_module.py`](scripts/06_refit_male_quartile_module.py) | Python | Re-fit the male-only per-quartile pro-aging module regression with corrected sample filter (Bug 2 fix); also re-renders Supp Fig 7 left panel. |
-| [`scripts/07_refit_family_genus_smoking_ols.py`](scripts/07_refit_family_genus_smoking_ols.py) | Python | Re-fit the family- and genus-level OLS smoking models with corrected sample filter (Bug 3 fix); rejoins the (untouched) age-side TSVs and re-renders Supp Figs 8–9. |
-| [`scripts/08_refit_mediation_panel.py`](scripts/08_refit_mediation_panel.py) | Python | Re-fit the multi-mediator panel with the correct ASCVD smoker mapping per `cvrisk.R` (Bug 4 fix); re-renders Supp Fig 10. |
+- `scripts/main/` — main-paper analyses producing Figures 1-6 and Supp Figs 1-5.
+- `scripts/revision/` — peer-review-period sensitivity / robustness analyses producing Supp Figs 6-11 and Supp Tables 9-21. Within `scripts/revision/`, scripts `01`-`04` are the original revision-analysis pipeline; scripts `02b` and `05`-`08` are the post-audit fix scripts (see [Audit history](#audit-history)) and supersede the corresponding sub-pipelines in `01` and `03` for the manuscript-ready results.
+
+| Script | Language | Paper figure / table | Purpose |
+| --- | --- | --- | --- |
+| [`scripts/main/01_main_maaslin2.R`](scripts/main/01_main_maaslin2.R) | R | Fig 1, 2, 3 OTU lists; Supp Figs 1, 2, 4, 5 | MaAsLin2 OTU-level fits for first-hand smoking (222 OTUs), second-hand smoking (117 OTUs), and age within never-smokers (330 OTUs); plus 9 stratified `Maaslin2()` calls (overall + Q1/Q2/Q3 + pack-year variants) and the violin-plot / Venn-diagram inputs of Fig 2 and the cross-stratum Supp Figs. |
+| [`scripts/main/02_lightgbm_smk.ipynb`](scripts/main/02_lightgbm_smk.ipynb) | Python (Jupyter, PyCaret 2.x) | Supp Fig 3 | Original PyCaret LightGBM smoking classifier (AUC ≈ 0.73) with SHAP feature-importance panel. |
+| [`scripts/main/03_gsea_disease.R`](scripts/main/03_gsea_disease.R) | R | Fig 5 | GSEA-style enrichment of smoking- and age-related OTU lists across six chronic-disease phenotypes (atherosclerosis, fatty liver, T2DM, hepatic calculus, gout, MetS) with `DESeq2`-derived OTU rankings. |
+| [`scripts/main/04_cvrisk_ascvd.R`](scripts/main/04_cvrisk_ascvd.R) | R | Fig 6a | ACC/AHA 2013 PCE 10-year ASCVD risk score per subject; Spearman correlation of |GAI| vs ASCVD. Also defines the canonical main-paper `current_smoker` derived smoker indicator (re-imported by the audit-fix `08_refit_mediation_panel.py`). |
+| [`scripts/main/05_mediation_main.R`](scripts/main/05_mediation_main.R) | R | Fig 6b | `mediation::mediate(..., sims = 1000, boot = TRUE)` panel of 6 candidate cardiometabolic mediators (FBG, HDL, LDL, HbA1c, SBP, UA), `set.seed(12345)`. |
+| [`scripts/revision/01_revision_analysis.py`](scripts/revision/01_revision_analysis.py) | Python | Supp Fig 6 + Supp Table 9; Supp Tables 13, 16 | Rarefaction / sequencing-depth supplement; family/genus age-side OLS (clean — never had a bug); produces `otu_overlap_from_original_results.tsv` consumed downstream. The male-only quartile and family/genus smoking OLS sub-pipelines have been superseded by scripts `06` and `07`. |
+| [`scripts/revision/02_maaslin2_reanalysis.R`](scripts/revision/02_maaslin2_reanalysis.R) | R | Supp Tables 18-19 | MaAsLin2 cross-check of the family- and genus-level smoking and age associations. |
+| [`scripts/revision/02b_maaslin2_male_only_otu.R`](scripts/revision/02b_maaslin2_male_only_otu.R) | R | Supp Fig 7 right panel + Supp Table 11 | MaAsLin2 male-only OTU-level re-fit for the 40 direction-concordant overlap OTUs in the same LOG framework as the published full-sample model (Bug 1 fix). |
+| [`scripts/revision/03_mediation_panel.py`](scripts/revision/03_mediation_panel.py) | Python | (superseded by `08`) | Ten-mediator panel under the original `gai_med.R` LM specification with bootstrap percentile 95% CIs. Superseded by script `08` (Bug 4 fix). |
+| [`scripts/revision/04_lightgbm_optimized.py`](scripts/revision/04_lightgbm_optimized.py) | Python | Supp Fig 11 + Supp Table 21 | Optuna TPE LightGBM smoking classifier (200-trial budget) with full per-fold diagnostics. |
+| [`scripts/revision/05_replot_male_only_figure.py`](scripts/revision/05_replot_male_only_figure.py) | Python | Supp Fig 7 right panel re-render | Re-render the right panel of Supp Fig 7, consuming the `02b` output. |
+| [`scripts/revision/06_refit_male_quartile_module.py`](scripts/revision/06_refit_male_quartile_module.py) | Python | Supp Fig 7 left panel + Supp Table 10 | Re-fit the male-only per-quartile pro-aging-module regression with the corrected sample filter (Bug 2 fix). |
+| [`scripts/revision/07_refit_family_genus_smoking_ols.py`](scripts/revision/07_refit_family_genus_smoking_ols.py) | Python | Supp Figs 8-9 + Supp Tables 12, 14, 15, 17 | Re-fit family- and genus-level OLS smoking models with the corrected sample filter (Bug 3 fix); rejoins the (untouched) age-side TSVs. |
+| [`scripts/revision/08_refit_mediation_panel.py`](scripts/revision/08_refit_mediation_panel.py) | Python | Supp Fig 10 + Supp Table 20 | Re-fit the multi-mediator panel with the correct ASCVD smoker mapping per `cvrisk.R` (Bug 4 fix). |
 
 A reference set of small output TSVs from our own run is provided under [`outputs-reference/`](outputs-reference/) so that re-runs can be cross-checked.
+
+> **A note on Figure 4 (correlations heatmap).** The published Figure 4 (correlation heatmap of smoking- and age-related OTUs) is built from a separate visualization step in the corresponding author's working tree that consumes the OTU lists produced by `scripts/main/01_main_maaslin2.R` (`non_mach_abx_GPf.rel.smk_status3.mas2`, etc.). That visualization step is not redistributed in this minimal A1 migration; it is straightforward to reconstruct from the OTU lists using any standard correlation-heatmap implementation (`corrplot`, `pheatmap`, etc.).
 
 ## Data dependencies
 
@@ -60,7 +79,7 @@ The scripts require three inputs. **None of them are redistributed in this repos
    This file is **not redistributed in this repository** because the derivations are part of the published manuscript's authorship contribution. Users should obtain it from the corresponding author or follow the GGMP data-access procedure. See [`data/README.md`](data/README.md) for the full list of columns the scripts depend on.
    Place the file at `data/GPf_metadata.tsv`.
 
-`scripts/01_revision_analysis.py` and `scripts/04_lightgbm_optimized.py` additionally read the OTU-level smoking and age association tables (`smk_status_sig_res.tsv` / `age_sig_res.tsv`, plus the subordinate `smk_amount_categ_sig_res.tsv` / `smk_y_categ_sig_res.tsv`). These are part of the manuscript's Supplementary Tables and can be regenerated from the main MaAsLin2 calls in the original GGMP repository. Place them at `data/smk_status_sig_res.tsv`, `data/age_sig_res.tsv`, etc.
+`scripts/revision/01_revision_analysis.py` and `scripts/revision/04_lightgbm_optimized.py` additionally read the OTU-level smoking and age association tables (`smk_status_sig_res.tsv` / `age_sig_res.tsv`, plus the subordinate `smk_amount_categ_sig_res.tsv` / `smk_y_categ_sig_res.tsv`). These are part of the manuscript's Supplementary Tables and can be regenerated from the main MaAsLin2 calls in the original GGMP repository. Place them at `data/smk_status_sig_res.tsv`, `data/age_sig_res.tsv`, etc.
 
 ## Software dependencies
 
@@ -102,36 +121,61 @@ pip install -r requirements.txt
 #       data/smk_amount_categ_sig_res.tsv
 #       data/smk_y_categ_sig_res.tsv
 
-# 3. Run scripts in order. All scripts default to relative paths and write to ./outputs/.
-#    Scripts 01-04 are the original pipeline. Scripts 02b and 05-08 are the post-audit
-#    fix scripts and produce the manuscript-ready outputs (see Audit history).
-python scripts/01_revision_analysis.py            # ~5 minutes
-Rscript scripts/02_maaslin2_reanalysis.R          # ~10 minutes
-Rscript scripts/02b_maaslin2_male_only_otu.R      # ~5 minutes  (Bug 1 fix)
-python scripts/03_mediation_panel.py              # ~10 minutes (superseded by 08)
-python scripts/04_lightgbm_optimized.py           # ~30 minutes
-python scripts/05_replot_male_only_figure.py      # ~10 seconds (Bug 1 fix figure)
-python scripts/06_refit_male_quartile_module.py   # ~1 minute   (Bug 2 fix)
-python scripts/07_refit_family_genus_smoking_ols.py  # ~2 minutes (Bug 3 fix)
-python scripts/08_refit_mediation_panel.py        # ~10 minutes (Bug 4 fix)
+# 3. Run scripts in order. All revision-period scripts default to relative paths
+#    and write to ./outputs/. Main-paper R scripts assume an analysis-ready
+#    phyloseq object `non_mach_abx_GPf.rel` is already in the R session
+#    (see scripts/main/01_main_maaslin2.R header for construction).
+
+# --- main-paper analyses (Figures 1-6 + Supp Fig 3) -----------------------
+Rscript scripts/main/01_main_maaslin2.R            # ~30 min  (main MaAsLin2)
+jupyter notebook scripts/main/02_lightgbm_smk.ipynb # interactive (Supp Fig 3)
+Rscript scripts/main/03_gsea_disease.R             # ~10 min  (Fig 5)
+Rscript scripts/main/04_cvrisk_ascvd.R             # ~1 min   (Fig 6a)
+Rscript scripts/main/05_mediation_main.R           # ~10 min  (Fig 6b)
+
+# --- revision-period sensitivity / robustness analyses --------------------
+# Scripts 01-04 are the original pipeline. Scripts 02b and 05-08 are the post-audit
+# fix scripts and produce the manuscript-ready outputs (see Audit history).
+python  scripts/revision/01_revision_analysis.py            # ~5 minutes
+Rscript scripts/revision/02_maaslin2_reanalysis.R           # ~10 minutes
+Rscript scripts/revision/02b_maaslin2_male_only_otu.R       # ~5 minutes  (Bug 1 fix)
+python  scripts/revision/03_mediation_panel.py              # ~10 minutes (superseded by 08)
+python  scripts/revision/04_lightgbm_optimized.py           # ~30 minutes
+python  scripts/revision/05_replot_male_only_figure.py      # ~10 seconds (Bug 1 fix figure)
+python  scripts/revision/06_refit_male_quartile_module.py   # ~1 minute   (Bug 2 fix)
+python  scripts/revision/07_refit_family_genus_smoking_ols.py  # ~2 minutes (Bug 3 fix)
+python  scripts/revision/08_refit_mediation_panel.py        # ~10 minutes (Bug 4 fix)
 ```
 
 Total wall-clock runtime on a modern laptop (M-series Mac, 2026): ~1.2 hours. See [`docs/reproducibility.md`](docs/reproducibility.md) for a full step-by-step reproducibility guide.
 
 ## Mapping: script → paper figure / table
 
+### Main-paper analyses
+
 | Output | Source script |
 | --- | --- |
-| Supp Fig 6 + Supp Table 9 (rarefaction / sequencing depth) | `01_revision_analysis.py` |
-| Supp Fig 7 left panel + Supp Table 10 (male-only quartile sensitivity) | `06_refit_male_quartile_module.py` (corrected; supersedes the 01 sub-pipeline) |
-| Supp Fig 7 right panel + Supp Table 11 (male-only OTU concordance) | `02b_maaslin2_male_only_otu.R` + `05_replot_male_only_figure.py` (corrected) |
-| Supp Fig 8 + Supp Tables 12, 14 (family-level smoking + shared) | `07_refit_family_genus_smoking_ols.py` (corrected; supersedes the 01 sub-pipeline) |
-| Supp Table 13 (family-level age within never-smokers) | `01_revision_analysis.py` (clean — never had a bug) |
-| Supp Fig 9 + Supp Tables 15, 17 (genus-level smoking + shared) | `07_refit_family_genus_smoking_ols.py` (corrected) |
-| Supp Table 16 (genus-level age within never-smokers) | `01_revision_analysis.py` (clean) |
-| Supp Tables 18-19 (MaAsLin2 family/genus cross-check) | `02_maaslin2_reanalysis.R` |
-| Supp Fig 10 + Supp Table 20 (multi-mediator panel) | `08_refit_mediation_panel.py` (corrected; supersedes `03_mediation_panel.py`) |
-| Supp Fig 11 + Supp Table 21 (Optuna LightGBM) | `04_lightgbm_optimized.py` |
+| Fig 1, 2, 3 OTU lists; Supp Figs 1, 2, 4, 5 (cross-stratum overlap and abundance trends) | `scripts/main/01_main_maaslin2.R` |
+| Supp Fig 3 (LightGBM smoking classifier ROC + SHAP) | `scripts/main/02_lightgbm_smk.ipynb` |
+| Fig 5 (GSEA enrichment across chronic-disease phenotypes) | `scripts/main/03_gsea_disease.R` |
+| Fig 6a (\|GAI\| vs ASCVD risk) | `scripts/main/04_cvrisk_ascvd.R` |
+| Fig 6b (mediation diagram) | `scripts/main/05_mediation_main.R` |
+| Fig 4 (correlations heatmap) | bespoke visualization step in the corresponding author's tree; consumes OTU lists from `scripts/main/01_main_maaslin2.R` (see "What this repo contains" note above) |
+
+### Revision-period analyses
+
+| Output | Source script |
+| --- | --- |
+| Supp Fig 6 + Supp Table 9 (rarefaction / sequencing depth) | `scripts/revision/01_revision_analysis.py` |
+| Supp Fig 7 left panel + Supp Table 10 (male-only quartile sensitivity) | `scripts/revision/06_refit_male_quartile_module.py` (corrected; supersedes the 01 sub-pipeline) |
+| Supp Fig 7 right panel + Supp Table 11 (male-only OTU concordance) | `scripts/revision/02b_maaslin2_male_only_otu.R` + `scripts/revision/05_replot_male_only_figure.py` (corrected) |
+| Supp Fig 8 + Supp Tables 12, 14 (family-level smoking + shared) | `scripts/revision/07_refit_family_genus_smoking_ols.py` (corrected; supersedes the 01 sub-pipeline) |
+| Supp Table 13 (family-level age within never-smokers) | `scripts/revision/01_revision_analysis.py` (clean — never had a bug) |
+| Supp Fig 9 + Supp Tables 15, 17 (genus-level smoking + shared) | `scripts/revision/07_refit_family_genus_smoking_ols.py` (corrected) |
+| Supp Table 16 (genus-level age within never-smokers) | `scripts/revision/01_revision_analysis.py` (clean) |
+| Supp Tables 18-19 (MaAsLin2 family/genus cross-check) | `scripts/revision/02_maaslin2_reanalysis.R` |
+| Supp Fig 10 + Supp Table 20 (multi-mediator panel) | `scripts/revision/08_refit_mediation_panel.py` (corrected; supersedes `03_mediation_panel.py`) |
+| Supp Fig 11 + Supp Table 21 (Optuna LightGBM) | `scripts/revision/04_lightgbm_optimized.py` |
 
 A more detailed mapping (including expected file names under `outputs/`) is in [`docs/reproducibility.md`](docs/reproducibility.md).
 

@@ -8,7 +8,7 @@ This directory holds the input data files. **None of them are tracked in git** (
   <https://github.com/SMUJYYXB/GGMP-Regional-variations>
 - **Description:** rarefied (even depth = 10,000 reads) OTU table covering the GGMP cohort. The analyzed subset in this manuscript is restricted to 6,676 samples that intersect with the project-specific metadata (item 3).
 - **Place at:** `data/GGMP7009_even10k.biom`
-- **Used by:** `01_revision_analysis.py`, `02_maaslin2_reanalysis.R`, `03_mediation_panel.py`, `04_lightgbm_optimized.py`
+- **Used by:** revision-period scripts `01_revision_analysis.py`, `02_maaslin2_reanalysis.R`, `03_mediation_panel.py`, `04_lightgbm_optimized.py`. Main-paper scripts (`scripts/main/01_main_maaslin2.R` and downstream) consume this file indirectly via the analysis-ready phyloseq object `non_mach_abx_GPf.rel`; see the next section.
 
 ## 2. Raw 16S FASTQ — ENA `PRJEB18535`
 
@@ -21,7 +21,17 @@ This directory holds the input data files. **None of them are tracked in git** (
 - **Source:** derived from the GGMP raw metadata (Supplementary Table S13 of He et al., 2018, *Nature Medicine*) plus project-specific filtering used by Bao et al. (n = 6,676 after antibiotic-use exclusion and complete-case filtering for the variables used here).
 - **Important: this file is NOT redistributed in this repository.** The derivations are part of the published manuscript's authorship contribution. Users should obtain it from the corresponding author (see the project `README.md` Contact section) or follow the GGMP data-access procedure documented in the original GGMP publication.
 - **Place at:** `data/GPf_metadata.tsv`
-- **Used by:** `01_revision_analysis.py`, `02_maaslin2_reanalysis.R`, `03_mediation_panel.py`, `04_lightgbm_optimized.py`
+- **Used by:** revision-period scripts `01_revision_analysis.py`, `02_maaslin2_reanalysis.R`, `03_mediation_panel.py`, `04_lightgbm_optimized.py`. Main-paper scripts consume this file indirectly via the analysis-ready phyloseq object `non_mach_abx_GPf.rel`; see the next section.
+
+### Analysis-ready phyloseq object — `non_mach_abx_GPf.rel`
+
+Some main-paper scripts (`scripts/main/01_main_maaslin2.R`, `03_gsea_disease.R`, `04_cvrisk_ascvd.R`, `05_mediation_main.R`) expect a pre-constructed analysis-ready phyloseq object stored as a `.rda` file (`non_mach_abx_GPf.rel`). This object's construction is documented inside `scripts/main/01_main_maaslin2.R` (lines 19-110) and depends on:
+
+1. The GGMP raw-processing pipeline at <https://github.com/SMUJYYXB/GGMP-Regional-variations>, used to build the relative-abundance phyloseq object `GPf.rel` from `GGMP7009_even10k.biom` plus `GPf_metadata.tsv`.
+2. The project-specific antibiotic-use exclusion described in the manuscript Methods (`subset_samples(GPf.rel, antibiotics == "n")`).
+3. The derived-variable construction (collapsed `smk_status3`, `age_categ`, `packyear`, `liquor`, `cvd`, `tumor`, `all_dis`, `health`) coded in lines 19-110 of `01_main_maaslin2.R`.
+
+The intermediate `.rda` files used by the corresponding author (`220914/221008.rda`, `221019.rda`, `221108.rda`, etc.; ~1.5-2 GB each) are NOT redistributed here because they bundle too much intermediate session state. Reproduction users should follow the construction steps above; alternatively, request the relevant `.rda` from the corresponding author.
 
 ### Key columns the scripts depend on
 
@@ -66,7 +76,7 @@ If a precomputed `ascvd_10y` (or any column containing `ascvd` / `cvrisk` / `ris
 
 ## 4. Existing OTU-level association tables (regenerable)
 
-`01_revision_analysis.py` additionally reads the OTU-level smoking and age association tables produced by the main MaAsLin2 analyses in the original GGMP repository:
+`scripts/revision/01_revision_analysis.py` additionally reads the OTU-level smoking and age association tables produced by the main MaAsLin2 analyses in the original GGMP repository (these tables are themselves the published result of `scripts/main/01_main_maaslin2.R`):
 
 - `data/smk_status_sig_res.tsv` — OTU-level results for the everyday-vs-never smoking model (used as the smoking arm of the OTU overlap).
 - `data/age_sig_res.tsv` — OTU-level results for the age model within never smokers.
@@ -75,7 +85,11 @@ If a precomputed `ascvd_10y` (or any column containing `ascvd` / `cvrisk` / `ris
 
 These are part of the manuscript's Supplementary Tables. They can be regenerated from the main MaAsLin2 calls in the original GGMP processing repository (<https://github.com/SMUJYYXB/GGMP-Regional-variations>) using the same MaAsLin2 settings documented in the manuscript's Methods.
 
-`04_lightgbm_optimized.py` reads only `data/smk_status_sig_res.tsv` (to pick the top-71 / top-150 / q<0.05 OTU subsets for the variant screen).
+`scripts/revision/04_lightgbm_optimized.py` reads only `data/smk_status_sig_res.tsv` (to pick the top-71 / top-150 / q<0.05 OTU subsets for the variant screen).
+
+## 5. Main-paper LightGBM feature matrix (`predict_smk.txt`)
+
+`scripts/main/02_lightgbm_smk.ipynb` reads `data/predict_smk.txt` — a tab-separated feature matrix (7,009 rows x 72 columns; 71 OTU relative-abundance feature columns plus the binary smoker `Districts` target column). This file is regenerable from `data/GGMP7009_even10k.biom` + `data/GPf_metadata.tsv` + `data/smk_status_sig_res.tsv` per the OTU-selection logic documented in the manuscript Methods, and is NOT redistributed here.
 
 ## Summary checklist
 
