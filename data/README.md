@@ -65,7 +65,7 @@ The scripts read a tab-separated file with the following columns. Numeric column
 
 - `Bristol_stool_type` — Bristol stool scale (1-7).
 - `county_level_code` — geographic stratum code.
-- `age_categ` — age quartile labelled as `Quantile 1` / `Quantile 2` / `Quantile 3` / `Quantile 4`.
+- `age_categ` — age quartile labelled as `Quartile 1` / `Quartile 2` / `Quartile 3` / `Quartile 4` (the published reference output `outputs-reference/male_only_module_effects_by_age.tsv` uses the column header `Quartile` directly).
 
 **ASCVD-related fields (used by `03_mediation_panel.py`)**
 

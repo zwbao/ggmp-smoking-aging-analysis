@@ -47,7 +47,7 @@ authors:
     email: ml2km@zju.edu.cn
 repository-code: "https://github.com/zwbao/ggmp-smoking-aging-analysis"
 license: MIT
-version: "1.1.0"
+version: "1.1.1"
 date-released: "2026-05-05"
 keywords:
   - gut-microbiome

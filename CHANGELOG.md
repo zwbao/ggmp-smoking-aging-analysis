@@ -4,6 +4,13 @@ All notable changes to this repository are documented in this file. The reposito
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html) — though for a code-release-with-paper repo "version" really tracks the snapshot used for a particular submission round.
 
+## [1.1.1] – 2026-05-05
+
+### Fixed
+- `outputs-reference/male_only_module_effects_by_age.tsv`: column header renamed from `age_categ` → `Quartile` and the four row values from `Quantile 1..4` → `Quartile 1..4`, matching the manuscript wording. The numbers (n_everyday, n_never, coef, FDR, etc.) are unchanged.
+- `data/README.md`: smk_status / age_categ column documentation updated to reflect the `Quartile` header in the published reference TSV.
+- `scripts/main/04_cvrisk_ascvd.R`: removed the active `graph2ppt(x = h_predicted_age_p1, ...)` call (which referenced a session-level object built outside this script and could not be sourced end-to-end). The call is preserved as a commented snippet so re-runners with the predicted-age model loaded can re-enable it manually.
+
 ## [1.1.0] — 2026-05-05
 
 ### Added

@@ -178,12 +178,15 @@ cor.test(abs(med_ana_dat2$abs_age_gap_adjust),
     labs_pubr() +
     ylab("Abs(GAI)") + xlab("ASCVD risk score"))
 
-# Note: `h_predicted_age_p1` is constructed in the corresponding author's
-# working tree (predicted-age scatter for healthy reference), not in this
-# script. The `graph2ppt` line is kept for fidelity but will fail unless
-# `h_predicted_age_p1` is bound in the session.
-graph2ppt(x = h_predicted_age_p1, file = "./pic/h_predicted_age_p1.pptx",
-          width = 4, height = 4)
+# Note: `h_predicted_age_p1` is a predicted-age scatter for the healthy
+# reference cohort, constructed elsewhere in the corresponding author's
+# tree (LightGBM age-prediction model output). The original interactive
+# session exported it via `graph2ppt`; we omit that call here so the
+# script sources end-to-end without requiring `h_predicted_age_p1` to be
+# bound. Re-enable manually if the predicted-age model is loaded:
+#   graph2ppt(x = h_predicted_age_p1,
+#             file = "./pic/h_predicted_age_p1.pptx",
+#             width = 4, height = 4)
 
 # ASCVD across age strata (sanity / supplementary panel).
 ggbetweenstats(
