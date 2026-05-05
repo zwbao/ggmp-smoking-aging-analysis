@@ -9,10 +9,10 @@ These are intentionally a small subset of the full output set — the large `*_m
 | File | Source script | Description |
 | --- | --- | --- |
 | `sequencing_depth_summary.tsv` | `01_revision_analysis.py` | Per-subset sequencing-depth summary (analysis n, min/median/max reads). Underlies Supp Table 9. |
-| `male_only_module_effects_by_age.tsv` | `01_revision_analysis.py` | Male-only adjusted effect of everyday smoking on the pro-aging module score, stratified by age quartile. Underlies Supp Table 11. |
-| `family_smoking_results.tsv` | `01_revision_analysis.py` | Family-level OLS smoking-association results (one row per family). Underlies Supp Tables 12-13. |
-| `genus_smoking_results.tsv` | `01_revision_analysis.py` | Genus-level OLS smoking-association results (one row per genus). Underlies Supp Tables 14-17. |
-| `mediation_panel_results.tsv` | `03_mediation_panel.py` | Ten-mediator panel results (path-a/b/c coefficients, q-values, indirect effect with 95% bootstrap CI, proportion mediated). Underlies Supp Table 20. |
+| `male_only_module_effects_by_age.tsv` | `06_refit_male_quartile_module.py` | Male-only adjusted effect of everyday smoking on the pro-aging module score, stratified by age quartile. Approach B (4-level smk_status, reference=never_smoker) — corrected for the smoke_binary string-NaN bug. Underlies Supp Table 10. |
+| `family_smoking_results.tsv` | `07_refit_family_genus_smoking_ols.py` | Family-level OLS smoking-association results (one row per family). Corrected for the smoke_binary string-NaN bug (n=5,926 rather than the 6,496 in the buggy run). Underlies Supp Table 12. |
+| `genus_smoking_results.tsv` | `07_refit_family_genus_smoking_ols.py` | Genus-level OLS smoking-association results (one row per genus). Corrected for the smoke_binary string-NaN bug (n=5,926). Underlies Supp Table 15. |
+| `mediation_panel_results.tsv` | `08_refit_mediation_panel.py` | Ten-mediator panel results (path-a/b/c coefficients, q-values, indirect effect with 95% bootstrap CI, proportion mediated). Corrected for the ASCVD smoker-mapping bug (using `cvrisk.R` definition). Underlies Supp Table 20. |
 | `lightgbm_optimized_hyperparameters.json` | `04_lightgbm_optimized.py` | Optuna-winning LightGBM hyperparameters + meta (winning variant, CV AUC mean / SD, n_trials). |
 | `lightgbm_optimized_cv_results.tsv` | `04_lightgbm_optimized.py` | Per-fold CV diagnostics (AUC + threshold-0.5 and Youden-thresholded confusion matrices, precision, recall, F1, MCC). Underlies Supp Table 21. |
 
