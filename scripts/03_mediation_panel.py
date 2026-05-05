@@ -580,7 +580,7 @@ def write_memo(results: pd.DataFrame, output_dir: Path, ascvd_source: str) -> No
         "age + gender + BMI + Bristol + county + smoking status in every "
         "path equation. That specification absorbs the smoking-driven module "
         "variance and is inconsistent with the original published analysis "
-        "(`220914/gai_med.R`, lines 81-118), which uses simple `lm(M ~ X)` and "
+        "(`gai_med.R` in the original GGMP processing repository, lines 81-118), which uses simple `lm(M ~ X)` and "
         "`lm(Y ~ M + X)` with no demographic or behavioural covariates. "
         "The corrected re-run below matches the published spec.",
         "",

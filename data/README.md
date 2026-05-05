@@ -32,7 +32,7 @@ The scripts read a tab-separated file with the following columns. Numeric column
 - `ID` — sample identifier matching the BIOM table column IDs.
 - `age` — age in years (numeric).
 - `gender` — `m` / `f`.
-- `smk_status` — categorical smoking status; values used by the scripts include `everyday`, `never_smoker`, `current_smoker`.
+- `smk_status` — categorical smoking status. The raw GGMP values are `everyday`, `not_everyday`, `former_smoker`, and `never_smoker`. The label `current_smoker` is **not** a raw value — it is derived in the original GGMP `code.R` / `cvrisk.R` by collapsing `everyday` ∪ `not_everyday` → `current_smoker`. See [`docs/audit/final_bug_fixes_memo.md`](../docs/audit/final_bug_fixes_memo.md) (Bug 4) for why this distinction matters for the ASCVD mediation panel.
 - `smk_y` — smoking pack-year category (used by the OTU-level main analysis).
 - `smk_amount_*` — smoking-amount categorical encodings (used by the OTU-level main analysis).
 - `smk_sec_*` — second-hand-smoke exposure encodings (used by the OTU-level main analysis).

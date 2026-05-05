@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """Refit the family-level and genus-level OLS smoking models with the
 *correct* sample filter, fixing the np.where('nan') string-encoding bug
-that propagated through `run_revision_analysis.run_taxonomic_robustness`
-(line 400).
+that propagated through `01_revision_analysis.run_taxonomic_robustness`
+(line 400 of that script).
+
+Produces the manuscript-ready data for Supp Tables 12, 14, 15, 17 and
+Supp Figs 8-9 (family- and genus-level smoking + shared scatter plots),
+superseding the corresponding sub-pipelines of `01_revision_analysis.py`.
 
 The bug:
     smoking_meta = meta[meta["smoke_binary"].notna() & ...]

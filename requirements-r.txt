@@ -1,17 +1,18 @@
 # R dependencies for the Bao et al. (NTR-2026-092) MaAsLin2 cross-check
-# (scripts/02_maaslin2_reanalysis.R). Tested with R >= 4.2.
+# (scripts/02_maaslin2_reanalysis.R and scripts/02b_maaslin2_male_only_otu.R).
+# Tested with R >= 4.2.
 #
 # Install via:
 # if (!require("BiocManager", quietly=TRUE)) install.packages("BiocManager")
-# BiocManager::install(c("Maaslin2", "biomformat", "phyloseq"))
-# install.packages(c("dplyr", "readr", "data.table"))
+# BiocManager::install(c("Maaslin2", "biomformat"))
+# install.packages(c("data.table", "jsonlite"))
 #
 # Bioconductor packages
-#   Maaslin2     -- multivariable association analysis (smoking / age models)
-#   biomformat   -- read GGMP7009_even10k.biom
-#   phyloseq     -- (optional, used in main-paper utilities)
+#   Maaslin2     -- multivariable association analysis (smoking / age models;
+#                   used by 02 and 02b)
+#   biomformat   -- read GGMP7009_even10k.biom (used by 02 and 02b)
 #
 # CRAN packages
-#   dplyr        -- data manipulation
-#   readr        -- TSV I/O
-#   data.table   -- fast TSV I/O (used directly in the script)
+#   data.table   -- fast TSV I/O via fread/fwrite (used by 02 and 02b)
+#   jsonlite     -- write male_only_concordance_maaslin2_summary.json
+#                   (used by 02b only)

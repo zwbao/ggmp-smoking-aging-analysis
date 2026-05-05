@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
 """Refit the male-only per-quartile pro-aging module regression with the
 *correct* sample filter, fixing the np.where('nan') string-encoding bug in
-`run_revision_analysis.py:clean_metadata` (line 60), which leaks 523
-former_smoker / non-daily smoker males into the analysis as `smoke_everyday=0`.
+`01_revision_analysis.clean_metadata` (line 60 of that script), which leaks
+523 former_smoker / non-daily smoker males into the analysis as
+`smoke_everyday=0`.
+
+Produces the manuscript-ready data for Supp Table 10 and the left panel of
+Supp Fig 7 (male-only quartile sensitivity), and re-renders both panels of
+Supp Fig 7 using the script-02b output for the right panel — superseding the
+male-only quartile sub-pipeline of `01_revision_analysis.py`.
 
 We reproduce the module construction logic of
 `run_revision_analysis.py:male_only_sensitivity` (lines 273-300) verbatim:

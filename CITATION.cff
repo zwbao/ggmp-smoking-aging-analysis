@@ -1,0 +1,76 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the accompanying paper."
+title: "Smoking, aging, and the gut microbiome — analysis code for Bao et al., NTR-2026-092"
+abstract: >-
+  Analysis code for the supplementary results of Bao et al. (NTR-2026-092),
+  a secondary analysis of the Guangdong Gut Microbiome Project (GGMP)
+  examining the joint relationship of smoking and aging with the gut
+  microbiome and cardiometabolic risk profiles. Includes the rarefaction
+  / sequencing-depth supplement, the male-only sensitivity analysis,
+  family- and genus-level OLS robustness re-tests, the MaAsLin2 family /
+  genus and male-only OTU cross-checks, the ten-mediator cardiometabolic
+  panel, and the Optuna-tuned LightGBM smoking classifier.
+authors:
+  - family-names: Bao
+    given-names: Zhiwei
+    affiliation: >-
+      State Key Laboratory for Diagnosis and Treatment of Infectious Diseases,
+      The First Affiliated Hospital, Zhejiang University School of Medicine,
+      Hangzhou, China
+  - family-names: Yang
+    given-names: Zhongli
+    affiliation: >-
+      State Key Laboratory for Diagnosis and Treatment of Infectious Diseases,
+      The First Affiliated Hospital, Zhejiang University School of Medicine,
+      Hangzhou, China
+  - family-names: Sun
+    given-names: Ruixiang
+    affiliation: "The Maiyata Research Institute For Beneficial Bacteria, Zhejiang, China"
+  - family-names: Meng
+    given-names: Ruiling
+    affiliation: "Guangdong Provincial Center for Disease Control and Prevention, Guangzhou, China"
+  - family-names: Wu
+    given-names: Wei
+    affiliation: >-
+      Guangdong Provincial Center for Disease Control and Prevention,
+      and Guangdong Provincial Institute of Public Health, Guangzhou, China
+  - family-names: Li
+    given-names: Ming D.
+    affiliation: >-
+      State Key Laboratory for Diagnosis and Treatment of Infectious Diseases,
+      The First Affiliated Hospital, Zhejiang University School of Medicine,
+      Hangzhou, China
+    email: ml2km@zju.edu.cn
+repository-code: "https://github.com/zwbao/ggmp-smoking-aging-analysis"
+license: MIT
+version: "1.0.0"
+date-released: "2026-05-05"
+keywords:
+  - gut-microbiome
+  - smoking
+  - aging
+  - cardiovascular-risk
+  - mediation-analysis
+  - secondary-analysis
+  - GGMP
+preferred-citation:
+  type: article
+  title: >-
+    Associations of smoking, aging, and their interplay with the gut
+    microbiome and chronic disease risk profiles
+  authors:
+    - family-names: Bao
+      given-names: Zhiwei
+    - family-names: Yang
+      given-names: Zhongli
+    - family-names: Sun
+      given-names: Ruixiang
+    - family-names: Meng
+      given-names: Ruiling
+    - family-names: Wu
+      given-names: Wei
+    - family-names: Li
+      given-names: Ming D.
+  journal: "Nicotine & Tobacco Research"
+  year: 2026
+  notes: "DOI to be added once assigned. Manuscript reference NTR-2026-092."

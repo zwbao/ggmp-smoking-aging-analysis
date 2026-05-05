@@ -6,7 +6,7 @@
 - Bootstrap resamples: 1000; seed = 12345 (matches gai_med.R `set.seed(12345)`)
 - **Path equations (no demographic covariates):** `M ~ pro_aging_score`, `ASCVD ~ M + pro_aging_score`, `ASCVD ~ pro_aging_score`.
 - Pro-aging module: 40 direction-concordant overlap OTUs, arcsin-sqrt rel. abundance, oriented by sign(age_coef), z-scored, mean across OTUs (full 6,676-sample subset).
-- **Smoker mapping (per `220914/cvrisk.R`):** never_smoker -> 0, everyday -> 1, not_everyday -> 1, former_smoker -> NaN (excluded from ASCVD).
+- **Smoker mapping (per the published `cvrisk.R` from the original GGMP processing repository):** never_smoker -> 0, everyday -> 1, not_everyday -> 1, former_smoker -> NaN (excluded from ASCVD).
 - Proportion mediated = ACME / (ACME + ADE) per `mediation::summary` (equivalent to indirect / total under LM).
 
 ## Verdict

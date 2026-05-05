@@ -12,7 +12,8 @@
 # MaAsLin2 LOG framework (TSS + LOG + LM, BH) so the two sets of coefficients
 # live in the same statistical space and the y=x diagonal becomes meaningful.
 #
-# Settings replicate 220914/code.R: min_prevalence=0, min_abundance=0,
+# Settings replicate the original GGMP main-paper `code.R`
+# (https://github.com/SMUJYYXB/GGMP-Regional-variations): min_prevalence=0, min_abundance=0,
 # normalization="TSS", transform="LOG", analysis_method="LM", correction="BH",
 # standardize=FALSE.
 #

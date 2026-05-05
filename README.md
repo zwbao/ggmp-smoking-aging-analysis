@@ -1,8 +1,10 @@
 # Smoking, aging, and the gut microbiome — analysis code for Bao et al., NTR-2026-092
 
+**Canonical home:** <https://github.com/zwbao/ggmp-smoking-aging-analysis>
+
 This repository contains the analysis code for the supplementary results of:
 
-> Bao Z, Yang Z, Sun R, Meng R, Wu W, Li MD. **Associations of smoking, aging, and their interplay with the gut microbiome and chronic disease risk profiles.** *Nicotine & Tobacco Research* (2026). DOI: TBD.
+> Bao Z, Yang Z, Sun R, Meng R, Wu W, Li MD. **Associations of smoking, aging, and their interplay with the gut microbiome and chronic disease risk profiles.** *Nicotine & Tobacco Research* (2026). DOI: TBD (will be updated once the article DOI is assigned).
 
 It is provided so that anyone with access to the public Guangdong Gut Microbiome Project (GGMP) data can re-run the four secondary / sensitivity analyses introduced during peer review. The original GGMP raw-processing workflow is *not* included here — see [Data dependencies](#data-dependencies).
 
@@ -62,8 +64,8 @@ The scripts require three inputs. **None of them are redistributed in this repos
 
 ## Software dependencies
 
-- **Python ≥ 3.9** with the packages listed in [`requirements.txt`](requirements.txt) (notably `biom-format`, `pandas`, `scikit-bio`, `statsmodels`, `lightgbm`, `optuna`).
-- **R ≥ 4.2** with the packages listed in [`requirements-r.txt`](requirements-r.txt) (notably the Bioconductor packages `Maaslin2`, `biomformat`, and `phyloseq`).
+- **Python ≥ 3.9** with the packages listed in [`requirements.txt`](requirements.txt) (notably `biom-format`, `pandas`, `scikit-bio`, `statsmodels`, `scikit-learn`, `lightgbm`, `optuna`).
+- **R ≥ 4.2** with the packages listed in [`requirements-r.txt`](requirements-r.txt) (Bioconductor packages `Maaslin2` and `biomformat`; CRAN packages `data.table` and `jsonlite`).
 
 Install Python deps with:
 
@@ -77,8 +79,8 @@ Install R deps with:
 
 ```r
 if (!require("BiocManager", quietly = TRUE)) install.packages("BiocManager")
-BiocManager::install(c("Maaslin2", "biomformat", "phyloseq"))
-install.packages(c("dplyr", "readr", "data.table"))
+BiocManager::install(c("Maaslin2", "biomformat"))
+install.packages(c("data.table", "jsonlite"))
 ```
 
 ## Quick start

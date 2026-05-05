@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
-"""Re-render supp_male_only_sensitivity.{png,pdf} with the MaAsLin2-based
-right panel.
+"""Re-render supp_male_only_sensitivity.{png,pdf} (Supp Fig 7) with the
+MaAsLin2-based right panel — Bug 1 figure-only fix. The fully-corrected
+figure (with both panels re-rendered from corrected data) is produced by
+`06_refit_male_quartile_module.py`; this script is kept for transparency
+about the intermediate fix that re-rendered only the right panel.
 
 Background
 ----------

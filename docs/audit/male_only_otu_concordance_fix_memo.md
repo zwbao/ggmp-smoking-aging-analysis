@@ -33,8 +33,8 @@ internally valid.
 
 ## The fix
 
-`run_maaslin2_male_only_otu.R` re-fits the male-only OTU smoking model in the
-*same MaAsLin2 LOG framework* used for the full-sample model:
+`scripts/02b_maaslin2_male_only_otu.R` re-fits the male-only OTU smoking model
+in the *same MaAsLin2 LOG framework* used for the full-sample model:
 
 - `Maaslin2(... normalization="TSS", transform="LOG", analysis_method="LM",
   correction="BH", min_abundance=0, min_prevalence=0, standardize=FALSE)`
@@ -59,10 +59,15 @@ Outputs:
 - `outputs/male_only_concordance_maaslin2_summary.json`
 - `outputs/maaslin2_runs/male_only_otu_smoking/` (Maaslin2 working directory)
 
-The buggy `male_only_overlap_otu_concordance.tsv` is **kept on disk
-unchanged** as a diagnostic record. The buggy supplementary figure is backed
-up to `supp_male_only_sensitivity_arcsinsqrt_buggy.{png,pdf}` before being
-overwritten by `replot_male_only_figure.py`.
+The buggy `male_only_overlap_otu_concordance.tsv` produced by script 01 is
+**kept on disk unchanged** in the local working tree as a diagnostic record
+(it is not committed to this public repository, since the regenerable buggy
+output adds no reproducibility value beyond the corrected MaAsLin2 TSV).
+The buggy supplementary figure is backed up to
+`supp_male_only_sensitivity_arcsinsqrt_buggy.{png,pdf}` before being
+overwritten by `scripts/05_replot_male_only_figure.py` (Bug-1 figure
+re-render). Script 06 then re-renders both panels of the figure with the
+fully-corrected left panel.
 
 ## Before-vs-after counts (40 direction-concordant overlap OTUs)
 
@@ -116,14 +121,13 @@ Use the new MaAsLin2 numbers, not the buggy arcsin-sqrt ones:
 inadvertent transform mismatch between the male-only and full-sample
 pipelines.)
 
-## Files written
+## Files in this repository
 
-- `revision-analysis/run_maaslin2_male_only_otu.R`
-- `revision-analysis/replot_male_only_figure.py`
-- `revision-analysis/logs/maaslin2_male_only_run.log`
-- `revision-analysis/outputs/male_only_overlap_otu_concordance_maaslin2.tsv`
-- `revision-analysis/outputs/male_only_concordance_maaslin2_summary.json`
-- `revision-analysis/outputs/supp_male_only_sensitivity.{png,pdf}` (overwritten)
-- `revision-analysis/outputs/supp_male_only_sensitivity_arcsinsqrt_buggy.{png,pdf}` (backup of buggy version)
-- `revision-analysis/outputs/maaslin2_runs/male_only_otu_smoking/` (MaAsLin2 working directory)
-- `revision-analysis/outputs/male_only_otu_concordance_fix_memo.md` (this memo)
+- `scripts/02b_maaslin2_male_only_otu.R` (Bug 1 fix script — re-runs the male-only MaAsLin2 LOG model)
+- `scripts/05_replot_male_only_figure.py` (re-renders Supp Fig 7 right panel; later superseded by `06_refit_male_quartile_module.py` which re-renders both panels)
+- `outputs/male_only_overlap_otu_concordance_maaslin2.tsv` (run output; reference copy in `outputs-reference/`)
+- `outputs/male_only_concordance_maaslin2_summary.json` (run output)
+- `outputs/supp_male_only_sensitivity.{png,pdf}` (overwritten, manuscript-ready)
+- `outputs/supp_male_only_sensitivity_arcsinsqrt_buggy.{png,pdf}` (local diagnostic backup of the buggy version, not committed)
+- `outputs/maaslin2_runs/male_only_otu_smoking/` (MaAsLin2 working directory)
+- `docs/audit/male_only_otu_concordance_fix_memo.md` (this memo)

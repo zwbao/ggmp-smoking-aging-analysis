@@ -8,7 +8,8 @@
 # used in the main paper) and writes outputs alongside the Python OLS TSVs
 # without overwriting them. Produces Supp Tables 18-19.
 #
-# Settings follow the original main-paper code (220914/code.R) exactly:
+# Settings follow the original main-paper code (`code.R` in the original GGMP
+# processing repository, https://github.com/SMUJYYXB/GGMP-Regional-variations) exactly:
 #   normalization="TSS", transform="LOG", analysis_method="LM",
 #   min_abundance=0.0, min_prevalence=0.0, correction="BH",
 #   standardize=FALSE

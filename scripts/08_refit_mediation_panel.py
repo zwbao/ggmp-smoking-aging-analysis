@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Refit the multi-mediator panel with the *correct* ASCVD smoker mapping,
-fixing Bug 4 in `run_mediation_panel_originalspec.py` line 243.
+fixing Bug 4 in `03_mediation_panel.py` (line 243 of that script).
+
+Produces the manuscript-ready data for Supp Table 20 and Supp Fig 10
+(ten-mediator cardiometabolic panel), superseding `03_mediation_panel.py`.
 
 The bug:
     df["smk_status"].map({"never_smoker": 0, "current_smoker": 1})
@@ -13,7 +16,8 @@ There is NO `current_smoker` value in GGMP — that label only exists as a
 `not_everyday` all to NaN, and ASCVD is computed only on never_smokers.
 The mediation panel then runs on n=3,426 never_smoker complete-cases.
 
-Original-study smoker definition (from `220914/cvrisk.R` and `code.R`):
+Original-study smoker definition (from `cvrisk.R` and `code.R` in the original
+GGMP processing repository, https://github.com/SMUJYYXB/GGMP-Regional-variations):
     smk_status3 := str_replace_all(smk_status, c(
         "not_everyday" = "current_smoker", "everyday" = "current_smoker"))
     cvrisk_df  <- cvrisk_df[smk_status %in% c("never_smoker", "current_smoker"), ]
@@ -21,17 +25,16 @@ Original-study smoker definition (from `220914/cvrisk.R` and `code.R`):
 That is — `former_smoker` rows are EXCLUDED from ASCVD entirely (they are
 neither never nor current); `everyday` and `not_everyday` -> 1; never -> 0.
 
-We adopt the cvrisk.R definition exactly:
+We adopt the published `cvrisk.R` definition exactly:
     never_smoker  -> 0
     everyday      -> 1
     not_everyday  -> 1
     former_smoker -> NaN  (excluded from ASCVD, matching cvrisk.R line 19)
 
-This is a stricter mapping than what the task brief suggested (former -> 0).
-We follow the published study because that's the only defensible choice
-when reproducing the published analysis; the task brief explicitly said
-"unless cvrisk.R reveals a different mapping that we must match (in which
-case use that)".
+This is intentionally faithful to the published smoker indicator rather than
+re-defining it (e.g., mapping `former_smoker` -> 0), because the goal of this
+fix is to make the revision-analysis ASCVD calculation match the one used in
+the published primary analysis.
 
 Outputs:
 - outputs/mediation_panel_results_corrected.tsv
@@ -614,7 +617,7 @@ def write_memo(results: pd.DataFrame, output_dir: Path, ascvd_source: str) -> No
         f"- Bootstrap resamples: {N_BOOTSTRAP}; seed = {SEED} (matches gai_med.R `set.seed(12345)`)",
         "- **Path equations (no demographic covariates):** `M ~ pro_aging_score`, `ASCVD ~ M + pro_aging_score`, `ASCVD ~ pro_aging_score`.",
         "- Pro-aging module: 40 direction-concordant overlap OTUs, arcsin-sqrt rel. abundance, oriented by sign(age_coef), z-scored, mean across OTUs (full 6,676-sample subset).",
-        "- **Smoker mapping (per `220914/cvrisk.R`):** never_smoker -> 0, everyday -> 1, not_everyday -> 1, former_smoker -> NaN (excluded from ASCVD).",
+        "- **Smoker mapping (per the published `cvrisk.R` from the original GGMP processing repository):** never_smoker -> 0, everyday -> 1, not_everyday -> 1, former_smoker -> NaN (excluded from ASCVD).",
         "- Proportion mediated = ACME / (ACME + ADE) per `mediation::summary` (equivalent to indirect / total under LM).",
         "",
         "## Verdict",
