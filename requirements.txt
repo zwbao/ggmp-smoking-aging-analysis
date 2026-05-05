@@ -1,0 +1,17 @@
+# Python dependencies for the Bao et al. (NTR-2026-092) revision-analysis scripts.
+# Tested with Python >= 3.9. Versions are pinned with ">=" to keep this lenient
+# for academic reproduction; if you need exact pins, use the highest version
+# available at the time of the original run (May 2026).
+
+biom-format>=2.1.16
+numpy>=1.24
+pandas>=2.0
+scipy>=1.10
+patsy>=0.5
+seaborn>=0.12
+matplotlib>=3.7
+scikit-bio>=0.5
+statsmodels>=0.14
+optuna>=3.0
+lightgbm>=4.0
+scikit-learn>=1.2

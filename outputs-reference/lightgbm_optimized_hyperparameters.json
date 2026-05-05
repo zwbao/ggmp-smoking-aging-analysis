@@ -1,0 +1,22 @@
+{
+  "__cv_auc_mean": 0.7324992818989697,
+  "__cv_auc_std": 0.02826897759760159,
+  "__cv_seed": 123,
+  "__feat_mode": "top150",
+  "__n_trials": 133,
+  "__tpe_seed": 20260504,
+  "__transform": "rel",
+  "class_weight": null,
+  "colsample_bytree": 0.7957389650574039,
+  "learning_rate": 0.00532694491747497,
+  "max_depth": 4,
+  "min_child_samples": 47,
+  "n_estimators": 1665,
+  "num_leaves": 107,
+  "objective": "binary",
+  "random_state": 20260504,
+  "reg_alpha": 0.0008419834836245077,
+  "reg_lambda": 5.0223158687406336e-08,
+  "subsample": 0.5127155125752131,
+  "subsample_freq": 1
+}
