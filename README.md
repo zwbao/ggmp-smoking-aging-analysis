@@ -67,8 +67,8 @@ install.packages(c("dplyr", "readr", "data.table"))
 ## Quick start
 
 ```bash
-git clone <this-repo>
-cd <this-repo>
+git clone https://github.com/zwbao/ggmp-smoking-aging-analysis.git
+cd ggmp-smoking-aging-analysis
 
 # 1. Set up the Python environment
 python3 -m venv .venv
